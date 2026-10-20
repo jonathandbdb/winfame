@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title="Privacy policy"
+  description="How Winfame Surgical handles the information you send through this website."
+>
+  <PageHeader title="Privacy policy" crumbs={[{ href: "/privacy", label: "Privacy" }]} />
+  <section class="container-x py-12">
+    <div class="prose-wf max-w-3xl text-ink">
+      <p>
+        This website collects only the information you choose to send us through the contact and quote forms: your name,
+        organization, email, phone, country and message, plus the products in your quote list.
+      </p>
+      <h2>How we use it</h2>
+      <p>We use this information only to answer your request, prepare quotations and follow up on your inquiry.</p>
+      <h2>Third parties</h2>
+      <p>
+        Form submissions are delivered to our inbox through Web3Forms. We do not sell or share your information for
+        marketing purposes.
+      </p>
+      <h2>Your quote list</h2>
+      <p>The products you add to your quote list are stored only in your browser until you send or clear them.</p>
+      <h2>Contact</h2>
+      <p>
+        To access or delete your information, write to <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

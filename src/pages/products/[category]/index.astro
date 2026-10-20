@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHeader from "../../../components/PageHeader.astro";
+import ProductCard from "../../../components/ProductCard.astro";
+import CtaBand from "../../../components/CtaBand.astro";
+import { getCategories, getProducts, type Category } from "../../../data/catalog";
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return categories.map((category, index) => ({ params: { category: category.id }, props: { category, index } }));
+}
+
+interface Props {
+  category: Category;
+  index: number;
+}
+const { category, index } = Astro.props;
+const products = await getProducts(category.id);
+---
+
+<BaseLayout title={category.data.title} description={category.data.summary}>
+  <PageHeader
+    eyebrow={`${String(index + 1).padStart(2, "0")} / Category`}
+    title={category.data.title}
+    lead={category.data.summary}
+    crumbs={[
+      { href: "/products", label: "Products" },
+      { href: `/products/${category.id}`, label: category.data.title },
+    ]}
+  />
+
+  <section class="container-x py-12">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {products.map((p) => (
+        <ProductCard product={p} />
+      ))}
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

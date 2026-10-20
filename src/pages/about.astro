@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import CtaBand from "../components/CtaBand.astro";
+
+// TODO: replace with the company's real story, certifications and address once provided.
+const values = [
+  {
+    n: "01",
+    title: "Precision",
+    text: "Clear specifications for every model, so the right instrument reaches the right procedure.",
+  },
+  { n: "02", title: "Reliability", text: "Consistent quality you can rely on, order after order." },
+  { n: "03", title: "Responsiveness", text: "Direct contact with our team for quotes, samples and delivery planning." },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="About Winfame Surgical, a supplier of ophthalmic blades, surgical instruments and diagnostic equipment."
+>
+  <PageHeader
+    eyebrow="About"
+    title="Instruments that respect the surgeon's technique."
+    lead="Winfame Surgical supplies ophthalmic micro-blades, LRI knives, surgical instruments and diagnostic equipment to clinics, hospitals and distributors."
+    crumbs={[{ href: "/about", label: "About" }]}
+  />
+
+  <section class="container-x grid gap-12 py-16 lg:grid-cols-12">
+    <div class="prose-wf text-lg text-ink lg:col-span-7">
+      <p>
+        We focus on what surgeons actually ask for: the exact blade width and angle, consistent edge quality, and a
+        supplier who answers quickly. Our ophthalmic range covers clear cornea blades, lancets, trapezoid and round
+        blades, and fixed-depth LRI knives, complemented by general surgical instruments and diagnostic equipment.
+      </p>
+      <p>
+        We also offer IOL Simulator, a virtual-reality tool that helps cataract patients understand their lens options
+        before surgery.
+      </p>
+    </div>
+    <div class="space-y-6 lg:col-span-5">
+      {values.map((v) => (
+        <div class="border-t-2 border-navy pt-4">
+          <span class="font-mono text-sm text-brand">{v.n}</span>
+          <h2 class="mt-1 text-lg font-bold">{v.title}</h2>
+          <p class="mt-1 text-sm text-muted">{v.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand
+    title="Looking for a reliable supplier?"
+    text="Tell us about your clinic, hospital or distribution business."
+  />
+</BaseLayout>

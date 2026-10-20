@@ -1,0 +1,37 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  crumbs?: { href: string; label: string }[];
+}
+const { eyebrow, title, lead, crumbs = [] } = Astro.props;
+---
+
+<section class="tech-grid border-b border-line bg-mist">
+  <div class="container-x py-12 sm:py-16">
+    {crumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="mb-5 font-mono text-xs text-muted">
+        <ol class="flex flex-wrap items-center gap-1.5">
+          <li>
+            <a href="/" class="hover:text-brand">
+              Home
+            </a>
+          </li>
+          {crumbs.map((c) => (
+            <li class="flex items-center gap-1.5">
+              <span aria-hidden="true">/</span>
+              <a href={c.href} class="hover:text-brand">
+                {c.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="mt-2 max-w-3xl text-3xl font-extrabold sm:text-4xl lg:text-5xl">{title}</h1>
+    {lead && <p class="mt-4 max-w-2xl text-lg leading-relaxed text-muted">{lead}</p>}
+    <slot />
+  </div>
+</section>

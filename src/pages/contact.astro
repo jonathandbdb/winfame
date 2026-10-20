@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { site, whatsappLink } from "../data/site";
+
+const channels = [
+  { label: "Email", value: site.email, href: `mailto:${site.email}` },
+  { label: "WhatsApp", value: site.phone, href: whatsappLink() },
+  { label: "Web", value: "winfamesurgical.com", href: site.url },
+];
+---
+
+<BaseLayout title="Contact" description="Contact Winfame Surgical by email, WhatsApp or the contact form.">
+  <PageHeader
+    eyebrow="Contact"
+    title="Talk to our team"
+    lead="Questions about a product, distribution or an IOL Simulator demo?"
+    crumbs={[{ href: "/contact", label: "Contact" }]}
+  />
+
+  <section class="container-x grid gap-12 py-12 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <ul class="divide-y divide-line rounded-xl border border-line">
+        {channels.map((c) => (
+          <li>
+            <a href={c.href} class="block px-5 py-4 hover:bg-mist" rel="noopener">
+              <span class="font-mono text-xs text-steel uppercase">{c.label}</span>
+              <span class="block font-semibold break-all text-navy">{c.value}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="lg:col-span-8">
+      <ContactForm subject={`Contact — ${site.name} website`} />
+    </div>
+  </section>
+</BaseLayout>

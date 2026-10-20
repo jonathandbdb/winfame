@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import Illustration from "./Illustration.astro";
+import { productUrl, searchText, type Product } from "../data/catalog";
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+const { title, summary, illustration, images, variants, design, placeholder, series } = product.data;
+---
+
+<a
+  href={productUrl(product)}
+  class="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-lg hover:shadow-navy/5"
+  data-product-card
+  data-search={searchText(product)}
+  data-category={product.data.category.id}
+>
+  <div
+    class:list={[
+      "relative grid aspect-[4/3] place-items-center border-b border-line",
+      images[0] ? "bg-white" : "tech-grid bg-mist",
+    ]}
+  >
+    {images[0] ? (
+      <Image
+        src={images[0]}
+        alt={title}
+        widths={[400, 800]}
+        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+        class="h-full w-full object-contain p-4 transition group-hover:scale-[1.03]"
+      />
+    ) : (
+      <Illustration name={illustration} class="size-28 text-navy transition group-hover:text-brand" />
+    )}
+    {series && (
+      <span class="absolute top-3 left-3 rounded border border-line bg-white px-1.5 py-0.5 font-mono text-[0.68rem] text-muted">
+        {series}
+      </span>
+    )}
+    {variants.length > 0 && (
+      <span class="absolute top-3 right-3 rounded bg-navy px-1.5 py-0.5 font-mono text-[0.68rem] text-white">
+        {variants.length} models
+      </span>
+    )}
+  </div>
+  <div class="flex flex-1 flex-col p-5">
+    {design && <p class="font-mono text-[0.72rem] text-steel">{design}</p>}
+    <h3 class="mt-1 text-lg font-bold">{title}</h3>
+    <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{summary}</p>
+    <span class="mt-auto pt-4 text-sm font-semibold text-brand">
+      {placeholder ? "Ask for availability →" : "View specifications →"}
+    </span>
+  </div>
+</a>

@@ -1,0 +1,128 @@
+---
+// Form posted to Web3Forms (static-site friendly). Set PUBLIC_WEB3FORMS_KEY in .env.
+// When `withQuote` is set, the current quote list is appended to the message.
+import { site } from "../data/site";
+
+interface Props {
+  subject: string;
+  withQuote?: boolean;
+  submitLabel?: string;
+}
+const { subject, withQuote = false, submitLabel = "Send message" } = Astro.props;
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? "";
+const field =
+  "mt-1.5 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-navy placeholder:text-steel focus:border-brand focus:outline-none";
+const label = "text-sm font-medium text-navy";
+---
+
+<form
+  class="grid gap-5 sm:grid-cols-2"
+  data-contact-form
+  data-with-quote={withQuote ? "true" : undefined}
+  data-email={site.email}
+  data-key={accessKey}
+>
+  <input type="hidden" name="subject" value={subject} />
+  <input type="hidden" name="from_name" value={site.name + " website"} />
+  <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+  <label class="block">
+    <span class={label}>Full name *</span>
+    <input name="name" required autocomplete="name" class={field} />
+  </label>
+  <label class="block">
+    <span class={label}>Clinic / hospital / company *</span>
+    <input name="organization" required autocomplete="organization" class={field} />
+  </label>
+  <label class="block">
+    <span class={label}>Email *</span>
+    <input name="email" type="email" required autocomplete="email" class={field} />
+  </label>
+  <label class="block">
+    <span class={label}>Phone / WhatsApp</span>
+    <input name="phone" type="tel" autocomplete="tel" class={field} />
+  </label>
+  <label class="block sm:col-span-2">
+    <span class={label}>Country *</span>
+    <input name="country" required autocomplete="country-name" class={field} />
+  </label>
+  <label class="block sm:col-span-2">
+    <span class={label}>Message</span>
+    <textarea
+      name="message"
+      rows="5"
+      class={field}
+      placeholder={withQuote ? "Quantities, delivery address, preferred packaging…" : "How can we help?"}
+    ></textarea>
+  </label>
+  <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+    <button type="submit" class="btn btn-primary">
+      {submitLabel}
+    </button>
+    <p class="text-sm" role="status" aria-live="polite" data-status></p>
+  </div>
+  <p class="text-xs text-muted sm:col-span-2">
+    By submitting you agree to be contacted about your request. See our{" "}
+    <a href="/privacy" class="underline">
+      privacy policy
+    </a>
+    .
+  </p>
+</form>
+
+<script>
+  import { clearQuote, getQuote, quoteToText } from "../scripts/quote";
+
+  document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
+    const status = form.querySelector<HTMLElement>("[data-status]");
+    const setStatus = (text: string, ok: boolean) => {
+      if (!status) return;
+      status.textContent = text;
+      status.className = `text-sm ${ok ? "text-teal" : "text-red-600"}`;
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const withQuote = form.dataset.withQuote === "true";
+      const items = withQuote ? getQuote() : [];
+      if (withQuote && items.length === 0) {
+        setStatus("Your quote list is empty — add products first.", false);
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      if (withQuote) data.quote_items = quoteToText(items);
+
+      const key = form.dataset.key;
+      if (!key) {
+        // No form backend configured yet: fall back to the user's mail client.
+        const body = Object.entries(data)
+          .filter(([k, v]) => v && !["subject", "from_name", "botcheck"].includes(k))
+          .map(([k, v]) => `${k.replace("_", " ")}: ${v}`)
+          .join("\n");
+        location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(body)}`;
+        return;
+      }
+
+      const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+      if (button) button.disabled = true;
+      setStatus("Sending…", true);
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ ...data, access_key: key }),
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+        form.reset();
+        if (withQuote) clearQuote();
+        setStatus("Thank you — we'll get back to you shortly.", true);
+      } catch {
+        setStatus(`Something went wrong. Please email us at ${form.dataset.email}.`, false);
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  });
+</script>

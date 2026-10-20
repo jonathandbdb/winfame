@@ -1,0 +1,137 @@
+---
+// Technical line drawings (spec-sheet style) used in place of product photos.
+// Drawn on a 120x120 grid with currentColor strokes so they inherit text color.
+import type { illustrations } from "../content.config";
+
+interface Props {
+  name: (typeof illustrations)[number];
+  class?: string;
+  title?: string;
+}
+const { name, class: className = "", title } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 120 120"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  role={title ? "img" : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : "true"}
+>
+  {name === "round-blade" && (
+    <g>
+      <path d="M48 96V40a12 12 0 0 1 24 0v56" />
+      <path d="M48 96h24M52 96v14h16V96" />
+      <path d="M60 30v-8M56 40h8" opacity=".4" />
+      <path d="M84 28v80" opacity=".35" stroke-dasharray="2 3" />
+      <path d="M81 28h6M81 108h6" opacity=".35" />
+    </g>
+  )}
+  {name === "double-edge" && (
+    <g>
+      <path d="M50 96 70 26v70Z" />
+      <path d="M70 26 58 70" opacity=".4" />
+      <path d="M50 96h20M54 96v14h12V96" />
+      <path d="M70 26a20 20 0 0 0-8 5" opacity=".5" />
+    </g>
+  )}
+  {name === "clear-cornea" && (
+    <g>
+      <path d="M44 96V48l16-26 16 26v48" />
+      <path d="M60 22v74M44 48h32" opacity=".35" />
+      <path d="M44 48 60 58l16-10" opacity=".4" />
+      <path d="M44 96h32M50 96v14h20V96" />
+    </g>
+  )}
+  {name === "double-lancet" && (
+    <g>
+      <path d="M44 96V52l16-32 16 32v44" />
+      <path d="M60 20v76" opacity=".35" />
+      <path d="M44 52h32" opacity=".2" />
+      <path d="M44 96h32M50 96v14h20V96" />
+    </g>
+  )}
+  {name === "straight-lancet" && (
+    <g>
+      <path d="M54 96V36l6-18 6 18v60" />
+      <path d="M60 18v78" opacity=".35" />
+      <path d="M54 96h12M56 96v14h8V96" />
+    </g>
+  )}
+  {name === "trapezoid" && (
+    <g>
+      <path d="M46 96V44l8-20h12l8 20v52" />
+      <path d="M54 24 60 34l6-10M46 44l14 8 14-8" opacity=".4" />
+      <path d="M46 96h28M51 96v14h18V96" />
+      <path d="M36 44h4M36 96h4M38 44v52" opacity=".35" />
+    </g>
+  )}
+  {name === "lri-knife" && (
+    <g>
+      <path d="M30 104 66 50" stroke-width="10" opacity=".9" />
+      <path d="M64 52 74 38l12 8-10 14Z" />
+      <path d="M74 38l4-8 8 2 2 6-2 8" />
+      <path d="M80 30l6-6M84 36l7-3" />
+      <path d="M70 46h3" opacity=".6" />
+      <path d="M92 70h14M92 76h10M92 82h12M92 88h8" opacity=".35" />
+    </g>
+  )}
+  {name === "forceps" && (
+    <g>
+      <path d="M60 106 46 24" />
+      <path d="M60 106 74 24" />
+      <path d="M46 24l4-6M74 24l-4-6" />
+      <path d="M50 62h20M51 68h18M52 74h16" opacity=".35" />
+      <circle cx="60" cy="106" r="3" />
+    </g>
+  )}
+  {name === "scissors" && (
+    <g>
+      <circle cx="44" cy="94" r="10" />
+      <circle cx="76" cy="94" r="10" />
+      <path d="M50 86 70 30M70 86 50 30" />
+      <circle cx="60" cy="58" r="2.5" />
+    </g>
+  )}
+  {name === "needle-holder" && (
+    <g>
+      <circle cx="44" cy="96" r="9" />
+      <circle cx="76" cy="96" r="9" />
+      <path d="M50 89 62 46M70 89 58 46" />
+      <path d="M58 46 57 22l3-4 3 4-1 24" />
+      <path d="M54 82h12M55 86h10" opacity=".4" />
+      <circle cx="60" cy="54" r="2.5" />
+    </g>
+  )}
+  {name === "scalpel" && (
+    <g>
+      <path d="M24 98 70 52" stroke-width="9" opacity=".9" />
+      <path d="M70 52 96 26c-2 12-8 24-18 34Z" />
+      <path d="M70 52l8 8" opacity=".5" />
+    </g>
+  )}
+  {name === "ultrasound" && (
+    <g>
+      <rect x="22" y="22" width="60" height="44" rx="4" />
+      <path d="M30 56c6-14 12-22 22-22s16 8 22 22" opacity=".5" />
+      <path d="M38 56c4-8 8-12 14-12s10 4 14 12" opacity=".35" />
+      <path d="M44 66v14h16V66M38 80h28" />
+      <path d="M86 44c10 0 14 8 14 18v20" />
+      <rect x="93" y="82" width="14" height="22" rx="5" />
+    </g>
+  )}
+  {name === "vr-headset" && (
+    <g>
+      <path d="M22 50c0-6 4-10 10-10h56c6 0 10 4 10 10v22c0 6-4 10-10 10H74l-8-10h-12l-8 10H32c-6 0-10-4-10-10Z" />
+      <circle cx="42" cy="61" r="8" opacity=".5" />
+      <circle cx="78" cy="61" r="8" opacity=".5" />
+      <path d="M22 56h-6M98 56h6" />
+      <path d="M44 28c10-6 22-6 32 0" opacity=".35" />
+    </g>
+  )}
+</svg>

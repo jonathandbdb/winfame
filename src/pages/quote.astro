@@ -1,0 +1,102 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout
+  title="Request a quote"
+  description="Send your product list to Winfame Surgical and receive pricing, availability and lead times."
+>
+  <PageHeader
+    eyebrow="Quote request"
+    title="Request a quote"
+    lead="Review your list, add your details and send it. We'll reply with pricing, availability and lead times."
+    crumbs={[{ href: "/quote", label: "Quote" }]}
+  />
+
+  <section class="container-x grid gap-10 py-12 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <div class="rounded-xl border border-line">
+        <div class="flex items-center justify-between border-b border-line px-5 py-4">
+          <h2 class="text-lg font-bold">Your list</h2>
+          <button type="button" class="text-xs font-medium text-muted hover:text-red-600" data-clear>
+            Clear all
+          </button>
+        </div>
+        <ul class="divide-y divide-line" data-quote-list></ul>
+        <div class="hidden px-5 py-10 text-center text-sm text-muted" data-quote-empty>
+          Your list is empty.
+          <br />
+          <a href="/products" class="mt-2 inline-block font-semibold text-brand">
+            Browse the catalog →
+          </a>
+        </div>
+      </div>
+      <a href="#" class="btn btn-outline mt-4 w-full" rel="noopener" data-whatsapp>
+        Send list via WhatsApp
+      </a>
+    </div>
+
+    <div class="lg:col-span-7">
+      <h2 class="mb-6 text-lg font-bold">Your details</h2>
+      <ContactForm subject={`Quote request — ${site.name} website`} withQuote submitLabel="Send quote request" />
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import {
+    clearQuote,
+    getQuote,
+    onQuoteChange,
+    quoteToText,
+    removeFromQuote,
+    setQty,
+    type QuoteItem,
+  } from "../scripts/quote";
+  import { whatsappLink } from "../data/site";
+
+  const list = document.querySelector<HTMLUListElement>("[data-quote-list]")!;
+  const empty = document.querySelector<HTMLElement>("[data-quote-empty]")!;
+  const wa = document.querySelector<HTMLAnchorElement>("[data-whatsapp]")!;
+
+  const esc = (s: string) =>
+    s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+  function render(items: QuoteItem[]) {
+    empty.classList.toggle("hidden", items.length > 0);
+    wa.classList.toggle("hidden", items.length === 0);
+    wa.href = whatsappLink(`Hello, I'd like a quote for:\n${quoteToText(items)}`);
+    list.innerHTML = items
+      .map(
+        (i) => `
+      <li class="flex items-center gap-4 px-5 py-4" data-id="${esc(i.id)}">
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-navy">${esc(i.product)}</p>
+          ${i.model ? `<p class="font-mono text-xs text-muted">Model ${esc(i.model)}${i.spec ? ` · ${esc(i.spec)}` : ""}</p>` : ""}
+        </div>
+        <label class="sr-only" for="qty-${esc(i.id)}">Quantity</label>
+        <input id="qty-${esc(i.id)}" type="number" min="1" value="${i.qty}" class="w-16 rounded-md border border-line px-2 py-1 text-center font-mono text-sm" data-qty />
+        <button type="button" class="text-steel hover:text-red-600" aria-label="Remove ${esc(i.product)}" data-remove>✕</button>
+      </li>`,
+      )
+      .join("");
+  }
+
+  list.addEventListener("change", (e) => {
+    const input = (e.target as HTMLElement).closest<HTMLInputElement>("[data-qty]");
+    const id = input?.closest<HTMLElement>("[data-id]")?.dataset.id;
+    if (input && id) setQty(id, Number(input.value) || 1);
+  });
+  list.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest("[data-remove]");
+    const id = btn?.closest<HTMLElement>("[data-id]")?.dataset.id;
+    if (id) removeFromQuote(id);
+  });
+  document.querySelector("[data-clear]")?.addEventListener("click", clearQuote);
+
+  render(getQuote());
+  onQuoteChange(render);
+</script>

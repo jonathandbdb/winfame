@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity=".07"/></pattern></defs>
+  <rect width="1200" height="630" fill="#0a2540"/><rect width="1200" height="630" fill="url(#g)"/>
+  <rect x="80" y="80" width="72" height="72" rx="16" fill="#1452cc"/>
+  <path d="M104 136V108l12-16 12 16v28" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+  <text x="176" y="130" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="800" fill="#fff">Winfame <tspan fill="#8fb1f0">Surgical</tspan></text>
+  <text x="80" y="330" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800" fill="#fff">Precision you can specify</text>
+  <text x="80" y="410" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800" fill="#4d8bff">to the micron.</text>
+  <text x="80" y="530" font-family="Courier New, monospace" font-size="26" fill="#ffffff" fill-opacity=".6">OPHTHALMIC BLADES · LRI KNIVES · SURGICAL INSTRUMENTS · DIAGNOSTICS</text>
+  <g transform="translate(900 120) scale(2.2)" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round"><path d="M44 96V48l16-26 16 26v48"/><path d="M44 48 60 58l16-10M44 96h32M50 96v14h20V96"/></g>
+</svg>

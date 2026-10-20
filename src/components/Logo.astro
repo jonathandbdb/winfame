@@ -1,0 +1,29 @@
+---
+// Provisional wordmark until the vector logo is supplied.
+interface Props {
+  inverted?: boolean;
+}
+const { inverted = false } = Astro.props;
+---
+
+<span class="inline-flex items-center gap-2.5">
+  <svg viewBox="0 0 32 32" class="size-8 shrink-0" aria-hidden="true">
+    <rect width="32" height="32" rx="7" fill={inverted ? "#ffffff" : "#1452cc"}></rect>
+    <path
+      d="M11 25V13l5-7 5 7v12"
+      fill="none"
+      stroke={inverted ? "#0a2540" : "#ffffff"}
+      stroke-width="1.8"
+      stroke-linejoin="round"
+    ></path>
+    <path d="M16 6v19" stroke={inverted ? "#0a2540" : "#ffffff"} stroke-width="1.2" opacity=".55"></path>
+  </svg>
+  <span
+    class:list={[
+      "font-display text-[1.05rem] leading-none font-extrabold tracking-tight",
+      inverted ? "text-white" : "text-navy",
+    ]}
+  >
+    Winfame <span class={inverted ? "text-white/70" : "text-brand"}>Surgical</span>
+  </span>
+</span>

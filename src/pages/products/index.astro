@@ -1,0 +1,133 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { getCategories, getProducts } from "../../data/catalog";
+
+const categories = await getCategories();
+const products = await getProducts();
+---
+
+<BaseLayout
+  title="Product catalog"
+  description="Browse Winfame Surgical's catalog: ophthalmic knives and blades, LRI knives, surgical instruments, scalpels and diagnostic equipment."
+>
+  <PageHeader
+    eyebrow="Catalog"
+    title="Product catalog"
+    lead="Search by product name, procedure or model number — e.g. 190CC, 2.2 mm or capsulorhexis."
+    crumbs={[{ href: "/products", label: "Products" }]}
+  >
+    <div class="mt-8 max-w-xl">
+      <label for="catalog-search" class="sr-only">
+        Search products
+      </label>
+      <div class="relative">
+        <svg
+          viewBox="0 0 20 20"
+          class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-steel"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <circle cx="9" cy="9" r="6"></circle>
+          <path d="m14 14 4 4"></path>
+        </svg>
+        <input
+          id="catalog-search"
+          type="search"
+          placeholder="Search products or model numbers…"
+          class="w-full rounded-lg border border-line bg-white py-3.5 pr-4 pl-12 text-base text-navy placeholder:text-steel focus:border-brand focus:outline-none"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </PageHeader>
+
+  <section class="container-x py-12">
+    <div class="-mx-1 mb-8 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+      <button type="button" class="chip is-active" data-filter="all" aria-pressed="true">
+        All
+      </button>
+      {categories.map((c) => (
+        <button type="button" class="chip" data-filter={c.id} aria-pressed="false">
+          {c.data.title}
+        </button>
+      ))}
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-grid>
+      {products.map((p) => (
+        <ProductCard product={p} />
+      ))}
+    </div>
+    <p class="hidden rounded-xl border border-dashed border-line p-10 text-center text-muted" data-empty>
+      No products match your search.{" "}
+      <a href="/contact" class="font-semibold text-brand">
+        Ask us directly
+      </a>{" "}
+      — we may still be able to source it.
+    </p>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .chip {
+    border: 1px solid var(--color-line);
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-navy);
+    cursor: pointer;
+  }
+  .chip:hover {
+    border-color: var(--color-navy);
+  }
+  .chip.is-active {
+    background: var(--color-navy);
+    border-color: var(--color-navy);
+    color: #fff;
+  }
+</style>
+
+<script>
+  const input = document.getElementById("catalog-search") as HTMLInputElement | null;
+  const chips = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+  const cards = document.querySelectorAll<HTMLElement>("[data-product-card]");
+  const empty = document.querySelector<HTMLElement>("[data-empty]");
+  let category = "all";
+
+  const params = new URLSearchParams(location.search);
+  if (input && params.get("q")) input.value = params.get("q")!;
+
+  function apply() {
+    const terms = (input?.value ?? "").toLowerCase().trim().split(/\s+/).filter(Boolean);
+    let visible = 0;
+    cards.forEach((card) => {
+      const text = card.dataset.search ?? "";
+      const ok = (category === "all" || card.dataset.category === category) && terms.every((t) => text.includes(t));
+      card.classList.toggle("hidden", !ok);
+      if (ok) visible++;
+    });
+    empty?.classList.toggle("hidden", visible > 0);
+  }
+
+  chips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      category = chip.dataset.filter ?? "all";
+      chips.forEach((c) => {
+        c.classList.toggle("is-active", c === chip);
+        c.setAttribute("aria-pressed", String(c === chip));
+      });
+      apply();
+    }),
+  );
+  input?.addEventListener("input", apply);
+  apply();
+</script>

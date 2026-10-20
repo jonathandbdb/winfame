@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Illustration from "../components/Illustration.astro";
+import { site, whatsappLink } from "../data/site";
+
+const steps = [
+  {
+    n: "01",
+    title: "Patient puts on the headset",
+    text: "A standalone VR headset — no cables, no computer, ready in seconds.",
+  },
+  {
+    n: "02",
+    title: "You configure each eye",
+    text: "Choose the lens profile for the right and left eye from a tablet, including monovision and mix-and-match.",
+  },
+  {
+    n: "03",
+    title: "Patient experiences real scenarios",
+    text: "Reading and fine detail in an office by day, and a night drive with traffic, headlights and glare.",
+  },
+  {
+    n: "04",
+    title: "Compare and decide together",
+    text: "Switch lenses with one tap while you see exactly what the patient sees, live on the tablet.",
+  },
+];
+
+const features = [
+  { title: "Halos, starbursts & glare", text: "Photic phenomena modeled from each lens design." },
+  { title: "Dynamic night pupil", text: "Pupil dilation in low light, as in real night driving." },
+  { title: "Distance-based defocus", text: "Near, intermediate and far vision rendered per lens profile." },
+  { title: "Contrast & residual astigmatism", text: "Contrast loss and residual cylinder can be simulated." },
+  { title: "Per-eye configuration", text: "Independent settings for OD and OS, monovision included." },
+  { title: "Remote lens catalog", text: "New lens profiles are delivered with remote updates." },
+];
+
+const lenses = [
+  { name: "Monofocal", text: "Sharp distance vision; glasses for near tasks." },
+  { name: "Trifocal diffractive", text: "Near, intermediate and far; possible halos at night." },
+  { name: "EDOF", text: "Extended range of vision with fewer photic phenomena." },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "IOL Simulator",
+  description: "Standalone VR headset that simulates vision with different intraocular lenses before cataract surgery.",
+  brand: { "@type": "Brand", name: "IOL Simulator" },
+  url: site.iolSimulatorUrl,
+};
+---
+
+<BaseLayout
+  title="IOL Simulator"
+  description="IOL Simulator lets cataract patients preview their vision with monofocal, trifocal and EDOF lenses in virtual reality before surgery."
+  jsonLd={jsonLd}
+>
+  <!-- Hero: this page uses a dark navy treatment to set it apart from the instrument catalog -->
+  <section class="relative overflow-hidden bg-navy text-white">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]"></div>
+    <div class="container-x relative grid items-center gap-12 py-16 lg:grid-cols-12 lg:py-24">
+      <div class="lg:col-span-7">
+        <nav aria-label="Breadcrumb" class="mb-6 font-mono text-xs text-white/50">
+          <a href="/" class="hover:text-white">
+            Home
+          </a>{" "}
+          / <span>IOL Simulator</span>
+        </nav>
+        <p class="eyebrow !text-teal">Patient education · Virtual reality</p>
+        <h1 class="mt-3 text-4xl leading-[1.05] font-extrabold !text-white sm:text-5xl">
+          Let patients <span class="text-teal">see</span> their lens before surgery.
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+          IOL Simulator is a standalone VR headset that reproduces vision with different intraocular lenses — so
+          patients understand the trade-offs and choose with confidence.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href={whatsappLink(`Hello ${site.name}, I'd like to book an IOL Simulator demo.`)}
+            class="btn bg-teal text-white hover:bg-teal/85"
+            rel="noopener"
+          >
+            Book a free demo
+          </a>
+          <a href={site.iolSimulatorUrl} class="btn btn-ghost-light" target="_blank" rel="noopener">
+            Visit iolsimulator.com ↗
+          </a>
+        </div>
+      </div>
+      <div class="lg:col-span-5">
+        <div class="relative mx-auto aspect-square max-w-sm">
+          <div class="absolute inset-0 rounded-full border border-white/10"></div>
+          <div class="absolute inset-8 rounded-full border border-white/10"></div>
+          <div class="absolute inset-16 rounded-full border border-teal/40"></div>
+          <div class="absolute inset-0 grid place-items-center">
+            <Illustration name="vr-headset" class="size-2/3 text-white" title="IOL Simulator VR headset" />
+          </div>
+          <span class="absolute top-6 right-2 rounded bg-white/10 px-2 py-1 font-mono text-[0.7rem] text-white/80">
+            OD · Trifocal
+          </span>
+          <span class="absolute bottom-10 left-0 rounded bg-white/10 px-2 py-1 font-mono text-[0.7rem] text-white/80">
+            OS · EDOF
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="container-x py-20">
+    <div class="grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="eyebrow">Why it matters</p>
+        <h2 class="mt-2 text-3xl font-extrabold">Choosing an IOL is hard to explain with words alone.</h2>
+      </div>
+      <div class="space-y-4 text-lg leading-relaxed text-muted lg:col-span-7">
+        <p>
+          Halos, glare, near vision and spectacle independence are abstract concepts for most patients. A few minutes in
+          the simulator turns them into an experience, which shortens the consultation and sets realistic expectations.
+        </p>
+        <p>It helps clinics support premium lens conversations and align expectations before surgery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="border-y border-line bg-mist py-20">
+    <div class="container-x">
+      <p class="eyebrow">How it works</p>
+      <h2 class="mt-2 text-3xl font-extrabold">A guided session in four steps</h2>
+      <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((s) => (
+          <li class="rounded-xl border border-line bg-white p-6" data-reveal>
+            <span class="font-mono text-sm text-teal">{s.n}</span>
+            <h3 class="mt-2 text-lg font-bold">{s.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Lenses + features -->
+  <section class="container-x grid gap-12 py-20 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <p class="eyebrow">Lens profiles</p>
+      <h2 class="mt-2 text-3xl font-extrabold">Compare lens families side by side</h2>
+      <ul class="mt-8 divide-y divide-line rounded-xl border border-line">
+        {lenses.map((l) => (
+          <li class="p-5">
+            <p class="font-bold text-navy">{l.name}</p>
+            <p class="mt-1 text-sm text-muted">{l.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="lg:col-span-7">
+      <p class="eyebrow">Simulation engine</p>
+      <h2 class="mt-2 text-3xl font-extrabold">What the simulator reproduces</h2>
+      <div class="mt-8 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
+        {features.map((f) => (
+          <div class="bg-white p-5">
+            <h3 class="font-bold">{f.title}</h3>
+            <p class="mt-1 text-sm text-muted">{f.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-x pb-16">
+    <div class="rounded-2xl bg-navy px-6 py-12 text-white sm:px-12 md:flex md:items-center md:justify-between md:gap-10">
+      <div class="max-w-xl">
+        <h2 class="text-2xl font-bold !text-white sm:text-3xl">See it in your own clinic.</h2>
+        <p class="mt-3 text-white/70">Book a free 30-minute demo with our team.</p>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-3 md:mt-0 md:shrink-0">
+        <a
+          href={whatsappLink(`Hello ${site.name}, I'd like to book an IOL Simulator demo.`)}
+          class="btn bg-teal text-white hover:bg-teal/85"
+          rel="noopener"
+        >
+          Book via WhatsApp
+        </a>
+        <a href="/contact" class="btn btn-ghost-light">
+          Contact form
+        </a>
+      </div>
+    </div>
+    <p class="mt-6 text-xs leading-relaxed text-muted">
+      IOL Simulator is not a diagnostic medical device. It reproduces optical profiles for educational purposes and does
+      not replace the surgeon's clinical judgment. Lens trade names belong to their respective manufacturers.
+    </p>
+  </section>
+</BaseLayout>

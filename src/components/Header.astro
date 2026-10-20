@@ -1,0 +1,158 @@
+---
+import { getCollection } from "astro:content";
+import Logo from "./Logo.astro";
+import Illustration from "./Illustration.astro";
+
+const categories = (await getCollection("categories")).sort((a, b) => a.data.order - b.data.order);
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href + "/");
+
+const links = [
+  { href: "/iol-simulator", label: "IOL Simulator" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur">
+  <div class="container-x flex h-16 items-center justify-between gap-4">
+    <a href="/" aria-label="Winfame Surgical home">
+      <Logo />
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+      <div class="group relative" data-mega>
+        <a
+          href="/products"
+          class:list={[
+            "inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium hover:text-brand",
+            isActive("/products") ? "text-brand" : "text-navy",
+          ]}
+          aria-haspopup="true"
+        >
+          Products
+          <svg
+            viewBox="0 0 16 16"
+            class="size-3.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="m4 6 4 4 4-4"></path>
+          </svg>
+        </a>
+        <div class="invisible absolute top-full left-1/2 w-[44rem] -translate-x-1/2 pt-3 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+          <div class="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-3 shadow-xl shadow-navy/5">
+            {categories.map((c, i) => (
+              <a href={`/products/${c.id}`} class="flex gap-3 rounded-lg p-3 hover:bg-mist">
+                <span class="grid size-11 shrink-0 place-items-center rounded-md border border-line bg-white text-brand">
+                  <Illustration name={c.data.illustration} class="size-8" />
+                </span>
+                <span>
+                  <span class="font-mono text-[0.68rem] text-steel">{String(i + 1).padStart(2, "0")}</span>
+                  <span class="block text-sm font-semibold text-navy">{c.data.title}</span>
+                </span>
+              </a>
+            ))}
+            <a
+              href="/products"
+              class="col-span-2 mt-1 rounded-lg border-t border-line px-3 pt-3 pb-1 text-sm font-medium text-brand hover:underline"
+            >
+              Browse the full catalog →
+            </a>
+          </div>
+        </div>
+      </div>
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class:list={[
+            "rounded-md px-3 py-2 text-sm font-medium hover:text-brand",
+            isActive(l.href) ? "text-brand" : "text-navy",
+          ]}
+        >
+          {l.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/quote" class="btn btn-primary !px-3.5 !py-2 text-sm">
+        <svg viewBox="0 0 20 20" class="size-4" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M6 3h8l2 3v11H4V6Z"></path>
+          <path d="M7 9h6M7 12h6M7 15h3"></path>
+        </svg>
+        Quote
+        <span
+          data-quote-count
+          class="hidden min-w-5 rounded-full bg-white px-1.5 text-center font-mono text-xs leading-5 text-brand"
+        >
+          0
+        </span>
+      </a>
+      <button
+        type="button"
+        class="grid size-10 place-items-center rounded-md border border-line lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        data-menu-toggle
+      >
+        <svg viewBox="0 0 20 20" class="size-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M3 6h14M3 10h14M3 14h14"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="hidden border-t border-line bg-white lg:hidden" aria-label="Mobile">
+    <div class="container-x max-h-[calc(100dvh-4rem)] overflow-y-auto py-4">
+      <p class="eyebrow mb-2">Products</p>
+      <ul class="mb-4 grid gap-1">
+        {categories.map((c) => (
+          <li>
+            <a href={`/products/${c.id}`} class="block rounded-md px-2 py-2 text-navy hover:bg-mist">
+              {c.data.title}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/products" class="block px-2 py-2 font-medium text-brand">
+            Full catalog →
+          </a>
+        </li>
+      </ul>
+      <ul class="grid gap-1 border-t border-line pt-4">
+        {links.map((l) => (
+          <li>
+            <a href={l.href} class="block rounded-md px-2 py-2 font-medium text-navy hover:bg-mist">
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  import { getQuote, onQuoteChange } from "../scripts/quote";
+
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const nav = document.getElementById("mobile-nav");
+  toggle?.addEventListener("click", () => {
+    const open = nav?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+
+  const badge = document.querySelector<HTMLElement>("[data-quote-count]");
+  const render = (n: number) => {
+    if (!badge) return;
+    badge.textContent = String(n);
+    badge.classList.toggle("hidden", n === 0);
+  };
+  const count = () => getQuote().reduce((s, i) => s + i.qty, 0);
+  render(count());
+  onQuoteChange(() => render(count()));
+</script>
